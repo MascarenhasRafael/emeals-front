@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import RecipeList from './components/RecipeList';
+import RecipeForm from './components/RecipeForm'
+import Header from './components/Header';
+import CssBaseline from '@mui/material/CssBaseline';
+import Container from '@mui/material/Container';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CssBaseline />
+      <Header/>
+      <Container maxWidth="md">
+        <Router>
+          <Routes>
+            <Route path="/" exact element={<RecipeList/>} />
+            <Route path="/new" exact element={<RecipeForm formType='new'/>} />
+            <Route path="/edit/:id" exact element={<RecipeForm formType='edit'/>} />
+            <Route component={() => <div>404 Not Found</div>} />
+          </Routes>
+        </Router>
+      </Container>
     </div>
   );
 }
