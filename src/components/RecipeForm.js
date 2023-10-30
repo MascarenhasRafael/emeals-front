@@ -24,24 +24,45 @@ const RecipeForm = ({ formType }) => {
     image_path: '',
     cook_time_in_seconds: 0,
     prep_time_in_seconds: 0,
-    prep_time_unit: 1,
-    cook_time_unit: 1,
+    prep_time_unit: 60,
+    cook_time_unit: 60,
     instructions: [],
     ingredients: [],
   }
 
   const [recipe, setRecipe] = useState(blankRecipeState);
 
+  const calculateTimeUnit = (timeInSeconds) => {
+    const units = [3600, 60, 1];
+    for (const unit of units) {
+      if ((timeInSeconds >= unit)) {
+        return unit;
+      }
+    }
+    return 60;
+  };
+  
+  const handleInitialDuration = useCallback((timeInSeconds, type) => {
+    const timeUnit = calculateTimeUnit(timeInSeconds);
+    const formattedTime = timeInSeconds / timeUnit;
+  
+    return {
+      [`${type}_time_unit`]: timeUnit,
+      [`${type}_time_in_seconds`]: formattedTime,
+    };
+  }, [])
+
   const fetchRecipe = useCallback(async () => {
     if (!paramId) { return }
 
     const data = await getRecipeById(paramId);
+    const { prep_time_in_seconds: prepTime, cook_time_in_seconds: cookTime } = data
     setRecipe({
       ...data,
-      prep_time_unit: 1,
-      cook_time_unit: 1
+      ...handleInitialDuration(prepTime, 'prep'),
+      ...handleInitialDuration(cookTime, 'cook')
     });
-  }, [paramId]);
+  }, [paramId, handleInitialDuration]);
 
   useEffect(() => {
     fetchRecipe();
