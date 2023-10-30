@@ -42,15 +42,10 @@ const RecipeForm = ({ formType }) => {
     return 60;
   };
   
-  const handleInitialDuration = useCallback((timeInSeconds, type) => {
-    const timeUnit = calculateTimeUnit(timeInSeconds);
-    const formattedTime = timeInSeconds / timeUnit;
-  
-    return {
-      [`${type}_time_unit`]: timeUnit,
-      [`${type}_time_in_seconds`]: formattedTime,
-    };
-  }, [])
+  const handleInitialDuration = useCallback((timeInSeconds, type) => ({
+      [`${type}_time_unit`]: calculateTimeUnit(timeInSeconds),
+      [`${type}_time_in_seconds`]: timeInSeconds / calculateTimeUnit(timeInSeconds),
+    }), [])
 
   const fetchRecipe = useCallback(async () => {
     if (!paramId) { return }
